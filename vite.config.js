@@ -18,6 +18,10 @@ export default defineConfig({
       '/health': {
         target: 'http://localhost:8080',
         changeOrigin: true,
+      },
+      '/scan-video': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
       }
     }
   }

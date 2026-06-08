@@ -1,0 +1,41 @@
+{
+  "_meta": {
+    "description": "Species-to-soil-texture suitability scores. 1.0 = thriving, 0.0 = unviable. Used by the agent to flag mismatched plantings as a contributing stress factor in diagnosis.",
+    "soil_textures": ["sandy", "sandy_loam", "loam", "silt_loam", "clay_loam", "clay", "chalky", "peaty"],
+    "scoring": "0.0-1.0, with thresholds: >=0.8 ideal, 0.6-0.8 acceptable, 0.4-0.6 stressed, <0.4 poor"
+  },
+  "matrix": {
+    "Quercus alba":            {"sandy": 0.5, "sandy_loam": 0.8, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.85, "clay": 0.55, "chalky": 0.5, "peaty": 0.3},
+    "Quercus robur":           {"sandy": 0.45, "sandy_loam": 0.75, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.9, "clay": 0.7, "chalky": 0.55, "peaty": 0.35},
+    "Quercus rubra":           {"sandy": 0.55, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.8, "clay_loam": 0.75, "clay": 0.5, "chalky": 0.45, "peaty": 0.3},
+    "Acer saccharum":          {"sandy": 0.4, "sandy_loam": 0.8, "loam": 1.0, "silt_loam": 0.9, "clay_loam": 0.85, "clay": 0.55, "chalky": 0.5, "peaty": 0.3},
+    "Acer rubrum":             {"sandy": 0.55, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.95, "clay_loam": 0.75, "clay": 0.55, "chalky": 0.4, "peaty": 0.75},
+    "Acer platanoides":        {"sandy": 0.5, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.85, "clay": 0.6, "chalky": 0.55, "peaty": 0.3},
+    "Fagus sylvatica":         {"sandy": 0.4, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.65, "clay": 0.45, "chalky": 0.85, "peaty": 0.25},
+    "Betula pendula":          {"sandy": 0.85, "sandy_loam": 0.95, "loam": 0.9, "silt_loam": 0.75, "clay_loam": 0.55, "clay": 0.4, "chalky": 0.55, "peaty": 0.8},
+    "Betula papyrifera":       {"sandy": 0.8, "sandy_loam": 0.95, "loam": 0.9, "silt_loam": 0.75, "clay_loam": 0.55, "clay": 0.4, "chalky": 0.5, "peaty": 0.7},
+    "Fraxinus excelsior":      {"sandy": 0.35, "sandy_loam": 0.7, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.9, "clay": 0.7, "chalky": 0.8, "peaty": 0.3},
+    "Fraxinus americana":      {"sandy": 0.4, "sandy_loam": 0.75, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.85, "clay": 0.65, "chalky": 0.6, "peaty": 0.3},
+    "Ulmus americana":         {"sandy": 0.4, "sandy_loam": 0.75, "loam": 1.0, "silt_loam": 0.95, "clay_loam": 0.9, "clay": 0.7, "chalky": 0.55, "peaty": 0.4},
+    "Tilia cordata":           {"sandy": 0.4, "sandy_loam": 0.8, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.85, "clay": 0.65, "chalky": 0.7, "peaty": 0.3},
+    "Platanus x acerifolia":   {"sandy": 0.55, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.9, "clay_loam": 0.85, "clay": 0.65, "chalky": 0.6, "peaty": 0.4},
+    "Populus tremuloides":     {"sandy": 0.7, "sandy_loam": 0.9, "loam": 0.95, "silt_loam": 0.85, "clay_loam": 0.65, "clay": 0.45, "chalky": 0.45, "peaty": 0.6},
+    "Populus nigra":           {"sandy": 0.5, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.95, "clay_loam": 0.8, "clay": 0.6, "chalky": 0.55, "peaty": 0.55},
+    "Salix alba":              {"sandy": 0.4, "sandy_loam": 0.75, "loam": 1.0, "silt_loam": 0.95, "clay_loam": 0.85, "clay": 0.7, "chalky": 0.5, "peaty": 0.75},
+    "Liquidambar styraciflua": {"sandy": 0.45, "sandy_loam": 0.8, "loam": 1.0, "silt_loam": 0.9, "clay_loam": 0.85, "clay": 0.65, "chalky": 0.4, "peaty": 0.45},
+    "Liriodendron tulipifera": {"sandy": 0.5, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.7, "clay": 0.45, "chalky": 0.45, "peaty": 0.4},
+    "Pinus sylvestris":        {"sandy": 0.95, "sandy_loam": 1.0, "loam": 0.8, "silt_loam": 0.6, "clay_loam": 0.45, "clay": 0.3, "chalky": 0.6, "peaty": 0.4},
+    "Pinus strobus":           {"sandy": 0.7, "sandy_loam": 0.95, "loam": 0.95, "silt_loam": 0.75, "clay_loam": 0.55, "clay": 0.4, "chalky": 0.4, "peaty": 0.4},
+    "Pinus ponderosa":         {"sandy": 0.95, "sandy_loam": 1.0, "loam": 0.85, "silt_loam": 0.6, "clay_loam": 0.45, "clay": 0.3, "chalky": 0.5, "peaty": 0.25},
+    "Picea abies":             {"sandy": 0.55, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.9, "clay_loam": 0.8, "clay": 0.6, "chalky": 0.45, "peaty": 0.55},
+    "Picea glauca":            {"sandy": 0.6, "sandy_loam": 0.9, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.75, "clay": 0.55, "chalky": 0.45, "peaty": 0.55},
+    "Abies alba":              {"sandy": 0.4, "sandy_loam": 0.75, "loam": 1.0, "silt_loam": 0.9, "clay_loam": 0.85, "clay": 0.6, "chalky": 0.45, "peaty": 0.35},
+    "Pseudotsuga menziesii":   {"sandy": 0.5, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.85, "clay_loam": 0.75, "clay": 0.5, "chalky": 0.5, "peaty": 0.3},
+    "Tsuga canadensis":        {"sandy": 0.45, "sandy_loam": 0.85, "loam": 1.0, "silt_loam": 0.9, "clay_loam": 0.75, "clay": 0.55, "chalky": 0.3, "peaty": 0.75},
+    "Cedrus deodara":          {"sandy": 0.65, "sandy_loam": 0.9, "loam": 1.0, "silt_loam": 0.8, "clay_loam": 0.7, "clay": 0.45, "chalky": 0.5, "peaty": 0.3},
+    "Cupressus sempervirens":  {"sandy": 0.75, "sandy_loam": 0.95, "loam": 0.9, "silt_loam": 0.7, "clay_loam": 0.55, "clay": 0.35, "chalky": 0.7, "peaty": 0.25},
+    "Eucalyptus globulus":     {"sandy": 0.7, "sandy_loam": 0.9, "loam": 1.0, "silt_loam": 0.8, "clay_loam": 0.7, "clay": 0.5, "chalky": 0.55, "peaty": 0.3},
+    "Olea europaea":           {"sandy": 0.7, "sandy_loam": 0.95, "loam": 0.9, "silt_loam": 0.7, "clay_loam": 0.55, "clay": 0.3, "chalky": 0.85, "peaty": 0.2},
+    "tree":                    {"sandy": 0.6, "sandy_loam": 0.8, "loam": 0.9, "silt_loam": 0.8, "clay_loam": 0.7, "clay": 0.5, "chalky": 0.55, "peaty": 0.5}
+  }
+}

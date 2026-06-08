@@ -1,69 +1,91 @@
 // src/components/TreePanel.jsx
+//
+// Right-side panel that opens when a tree is selected. Same component
+// for both satellite and video modes:
+//
+// - Satellite: when a tree is clicked we lazily POST /diagnose with a
+//   tight crop. Result includes a full evidenceTrace from the agent.
+// - Video: the diagnosis is already attached to each tree by the
+//   /scan-video pipeline (full evidence trace included).
+//
+// No more dead UI (NDVI, soil pH, weather, etc.) — only fields that
+// the real backend actually populates.
+
 import React from 'react'
 import { useForestStore } from '../store/forestStore'
+import { fetchTreeCrop } from '../services/scoringService'
+import { EvidenceTrace } from './EvidenceTrace'
 
 const RISK_LABEL = {
   healthy: 'Healthy',
   monitor: 'Monitor',
-  treat: 'Needs treatment',
-  cut: 'Cut down'
+  treat:   'Needs treatment',
+  cut:     'Cut down',
 }
 const RISK_BG = {
   healthy: '#EAF3DE',
   monitor: '#FAEEDA',
-  treat: '#FAECE7',
-  cut: '#FCEBEB'
+  treat:   '#FAECE7',
+  cut:     '#FCEBEB',
 }
 const RISK_TEXT = {
   healthy: '#27500A',
   monitor: '#633806',
-  treat: '#712B13',
-  cut: '#501313'
+  treat:   '#712B13',
+  cut:     '#501313',
 }
 
+
 export function TreePanel() {
-  // ── ALL hooks must be at the top, before any return ──
-  const trees        = useForestStore(s => s.trees)
-  const selectedId   = useForestStore(s => s.selectedTreeId)
-  const selectTree   = useForestStore(s => s.selectTree)
-  const updateTreeEnv = useForestStore(s => s.updateTreeEnv)
+  const trees      = useForestStore(s => s.trees)
+  const selectedId = useForestStore(s => s.selectedTreeId)
+  const selectTree = useForestStore(s => s.selectTree)
+  const updateTree = useForestStore(s => s.updateTree)
+  const mode       = useForestStore(s => s.mode)
+  const videoJob   = useForestStore(s => s.videoJob)
 
   const tree = trees.find(t => t.id === selectedId)
 
-  React.useEffect(() => {
-    if (!tree) return
+  const isVideoMode = mode !== 'satellite'
 
-    console.log('[Diagnosis] Running for tree:', tree.id, 'status:', tree.status)
+  // ── Satellite-only: lazy-diagnose on tree click ─────────────────────
+  React.useEffect(() => {
+    if (!tree || isVideoMode) return
+    if (tree.disease !== undefined) return  // already diagnosed
+    let cancelled = false
 
     const runDiagnosis = async () => {
       try {
+        const imageBase64 = await fetchTreeCrop(tree.lat, tree.lng)
+        if (cancelled) return
+
         const res = await fetch('/diagnose', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            image_base64: 'none',
-            health_score: tree.healthScore ?? 75,
-            ndvi: tree.ndvi ?? 0.5,
+            image_base64: imageBase64,
             status: tree.status ?? 'healthy',
             visual_symptoms: tree.visualSymptoms ?? [],
-          })
+            mode_hint: 'satellite',
+          }),
         })
         if (!res.ok) {
-          console.warn('[Diagnosis] Bad response:', res.status)
+          const err = await res.json().catch(() => ({ detail: res.statusText }))
+          console.warn('[diagnose] failed:', res.status, err)
           return
         }
         const diagnosis = await res.json()
-        console.log('[Diagnosis] Got result:', diagnosis)
-        updateTreeEnv(tree.id, diagnosis)
+        if (cancelled) return
+        updateTree(tree.id, diagnosis)
       } catch (e) {
-        console.warn('[Diagnosis] Failed:', e)
+        console.warn('[diagnose] threw:', e)
       }
     }
 
     runDiagnosis()
-  }, [tree?.id]) // fires every time a different tree is selected
+    return () => { cancelled = true }
+  }, [tree?.id, isVideoMode])
 
-  // ── Early return AFTER all hooks ──
   if (!tree) return null
 
   const status = tree.status ?? 'healthy'
@@ -72,104 +94,123 @@ export function TreePanel() {
     healthScore > 60 ? '#639922' :
     healthScore > 40 ? '#EF9F27' : '#E24B4A'
 
-  const hasCanopyScan = tree.ndvi != null
-  const hasStemScan = tree.diameterCm != null
+  const diagnosing = tree.disease === undefined
+
+  // Build crop image URL — only video mode has one.
+  const cropUrl = tree.cropUrl
+    ? (videoJob?.job_id ? `/scan-video/${videoJob.job_id}/tree/${tree.track_id}/image` : null)
+    : null
 
   return (
     <div style={{
-      position: 'absolute', right: 0, top: 0, width: 320, height: '100%',
+      position: 'absolute', right: 0, top: 0, width: 360, height: '100%',
       background: 'white', borderLeft: '1px solid #e5e5e5',
       overflowY: 'auto', padding: '20px', zIndex: 100,
-      fontFamily: 'system-ui, sans-serif'
+      fontFamily: 'system-ui, sans-serif',
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <div style={{ fontSize: 15, fontWeight: 600 }}>{tree.id}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between',
+        alignItems: 'flex-start', marginBottom: 12 }}>
+        <div>
+          <div style={{ fontSize: 11, color: '#9ca3af', fontFamily: 'monospace' }}>
+            {isVideoMode ? `track ${tree.track_id}` : tree.id}
+          </div>
+          {tree.species && (
+            <div style={{ fontSize: 15, fontWeight: 600, marginTop: 2 }}>
+              {tree.species}
+              {tree.speciesConfidence != null && (
+                <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 400, marginLeft: 6 }}>
+                  conf {(tree.speciesConfidence * 100).toFixed(0)}%
+                </span>
+              )}
+            </div>
+          )}
+        </div>
         <button
           onClick={() => selectTree(null)}
-          style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 18 }}
-        >
-          ×
-        </button>
+          style={{ border: 'none', background: 'none', cursor: 'pointer',
+            fontSize: 20, color: '#9ca3af', padding: 0, lineHeight: 1 }}
+        >×</button>
       </div>
 
-      {/* Awaiting diagnosis banner — shows for ANY tree not yet diagnosed */}
-      {tree.disease === undefined && (
+      {/* Crop thumbnail — video mode */}
+      {cropUrl && (
+        <img
+          src={cropUrl}
+          alt="tree crop"
+          style={{
+            width: '100%', height: 160, objectFit: 'cover',
+            borderRadius: 6, marginBottom: 12,
+            background: '#f3f4f6',
+          }}
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
+        />
+      )}
+
+      {/* Awaiting diagnosis */}
+      {diagnosing && (
         <div style={{
-          background: '#f0f9ff', borderRadius: 8,
+          background: '#eff6ff', borderRadius: 8,
           padding: '8px 12px', marginBottom: 12,
-          fontSize: 12, color: '#185FA5',
-          display: 'flex', alignItems: 'center', gap: 6
+          fontSize: 12, color: '#1e40af',
+          display: 'flex', alignItems: 'center', gap: 8,
         }}>
           <span style={{
             width: 6, height: 6, borderRadius: '50%',
-            background: '#185FA5', display: 'inline-block',
-            animation: 'pulse 1s infinite'
+            background: '#1e40af', display: 'inline-block',
+            animation: 'pulse 1s infinite',
           }} />
-          Analyzing with AI...
+          Running agent diagnosis…
         </div>
       )}
 
-      {/* Score ring + status badge */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+      {/* Score ring + status */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 18 }}>
         <div style={{
           width: 64, height: 64, borderRadius: '50%',
           border: `6px solid ${scoreColor}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 18, fontWeight: 700, color: scoreColor, flexShrink: 0
-        }}>
-          {healthScore}
-        </div>
+          fontSize: 18, fontWeight: 700, color: scoreColor, flexShrink: 0,
+        }}>{healthScore}</div>
         <div>
-          <div style={{ fontSize: 13, color: '#666', marginBottom: 4 }}>Health score</div>
+          <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Health score</div>
           <span style={{
-            background: RISK_BG[status],
-            color: RISK_TEXT[status],
-            padding: '2px 10px', borderRadius: 999, fontSize: 12, fontWeight: 600
+            background: RISK_BG[status], color: RISK_TEXT[status],
+            padding: '2px 10px', borderRadius: 999, fontSize: 12, fontWeight: 600,
           }}>
             {RISK_LABEL[status]}
           </span>
         </div>
       </div>
 
-      {/* Scan perspective badges */}
-      <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>Scan perspective</div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Badge label="Canopy" active={hasCanopyScan} />
-          <Badge label="Stem" active={hasStemScan} />
-        </div>
-      </div>
-
-      {/* Stem diameter */}
-      {hasStemScan && (
-        <div style={{ background: '#f0f9ff', borderRadius: 8, padding: '12px 14px', marginBottom: 12 }}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Stem diameter (DBH)</div>
-          <div style={{ fontSize: 22, fontWeight: 700 }}>{tree.diameterCm} cm</div>
-        </div>
-      )}
-
       {/* Disease */}
       {tree.disease && (
-        <div style={{ background: '#fafafa', borderRadius: 8, padding: '12px 14px', marginBottom: 12 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+        <div style={{
+          background: '#fafafa', borderRadius: 8,
+          padding: '12px 14px', marginBottom: 12,
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between',
+            alignItems: 'center', marginBottom: 4 }}>
             <div style={{ fontSize: 11, color: '#888' }}>Detected condition</div>
             {tree.diseaseConfidence != null && (
-              <span style={{ fontSize: 11, color: '#aaa' }}>
-                {Math.round(tree.diseaseConfidence * 100)}% conf.
+              <span style={{ fontSize: 11, color: '#9ca3af' }}>
+                {Math.round(tree.diseaseConfidence * 100)}% confidence
               </span>
             )}
           </div>
           <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 4 }}>{tree.disease}</div>
-          {tree.geminiSummary && (
-            <div style={{ fontSize: 12, color: '#666', lineHeight: 1.5 }}>{tree.geminiSummary}</div>
+          {tree.summary && (
+            <div style={{ fontSize: 12, color: '#4b5563', lineHeight: 1.5 }}>
+              {tree.summary}
+            </div>
           )}
         </div>
       )}
 
       {/* Action plan */}
       {tree.actionPlan && (
-        <div style={{ background: '#f0f9ff', borderRadius: 8, padding: '12px 14px', marginBottom: 12 }}>
+        <div style={{ background: '#eff6ff', borderRadius: 8,
+          padding: '12px 14px', marginBottom: 12 }}>
           <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Action plan</div>
           <div style={{ fontSize: 13, lineHeight: 1.5 }}>{tree.actionPlan}</div>
         </div>
@@ -179,7 +220,7 @@ export function TreePanel() {
       {status === 'cut' && tree.cutReason && (
         <div style={{
           background: '#FCEBEB', border: '1px solid #f09595',
-          borderRadius: 8, padding: '12px 14px', marginBottom: 12
+          borderRadius: 8, padding: '12px 14px', marginBottom: 12,
         }}>
           <div style={{ fontSize: 11, color: '#A32D2D', marginBottom: 4, fontWeight: 600 }}>
             Cut required
@@ -191,93 +232,46 @@ export function TreePanel() {
       {/* Visual symptoms */}
       {tree.visualSymptoms?.length > 0 && (
         <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>Visual symptoms</div>
+          <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>Visible symptoms</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {tree.visualSymptoms.map(s => (
               <span key={s} style={{
-                background: '#f5f5f5', padding: '2px 8px',
-                borderRadius: 999, fontSize: 12
-              }}>
-                {s}
-              </span>
+                background: '#f3f4f6', padding: '2px 8px',
+                borderRadius: 999, fontSize: 12,
+              }}>{s}</span>
             ))}
           </div>
         </div>
       )}
 
-      {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        <Stat label="Spread risk" value={`${Math.round((tree.spreadRiskScore ?? 0) * 100)}%`} />
-        <Stat label="Infection zone" value={`${tree.spreadRiskRadiusM ?? 0}m`} />
-        <Stat label="At-risk neighbors" value={tree.neighborIds?.length ?? 0} />
-        <Stat label="NDVI" value={tree.ndvi != null ? tree.ndvi.toFixed(2) : '—'} />
-      </div>
-
-      {/* Environment */}
-      <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>Environment</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        <Stat label="Soil pH" value={tree.soil?.ph ?? '—'} />
-        <Stat label="Soil type" value={tree.soil?.texture ?? '—'} />
-        <Stat label="Humidity" value={tree.weather?.humidity != null ? `${tree.weather.humidity}%` : '—'} />
-        <Stat label="Temp" value={tree.weather?.tempC != null ? `${tree.weather.tempC}°C` : '—'} />
-        <Stat label="Rain (7d)" value={tree.weather?.rainMm7d != null ? `${tree.weather.rainMm7d}mm` : '—'} />
-        <Stat label="Sun (7d)" value={tree.weather?.sunHours7d != null ? `${tree.weather.sunHours7d}h` : '—'} />
-      </div>
-
-      {/* Score history */}
-      {tree.scanHistory?.length > 1 && (
-        <div>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>Score history</div>
-          <div style={{ display: 'flex', gap: 3, alignItems: 'flex-end', height: 40 }}>
-            {tree.scanHistory.slice(-10).map((h, i) => (
-              <div key={i} title={`Score: ${h.score}`} style={{
-                flex: 1,
-                background: h.score > 60 ? '#639922' : h.score > 40 ? '#EF9F27' : '#E24B4A',
-                height: `${Math.max(10, h.score)}%`,
-                borderRadius: 2, opacity: 0.85, minWidth: 4
-              }} />
-            ))}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-            <span style={{ fontSize: 10, color: '#ccc' }}>oldest</span>
-            <span style={{ fontSize: 10, color: '#ccc' }}>latest</span>
-          </div>
+      {/* Evidence trace from the agent */}
+      {tree.evidenceTrace?.length > 0 && (
+        <div style={{ marginTop: 16, paddingTop: 12,
+          borderTop: '1px solid #f0f0f0' }}>
+          <EvidenceTrace trace={tree.evidenceTrace} />
         </div>
       )}
 
-      {/* GPS */}
-      <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #f0f0f0' }}>
-        <div style={{ fontSize: 10, color: '#bbb', fontFamily: 'monospace' }}>
-          {tree.lat?.toFixed(6)}, {tree.lng?.toFixed(6)}
-        </div>
-        {tree.lastScannedAt && (
-          <div style={{ fontSize: 10, color: '#bbb', marginTop: 2 }}>
-            Last scanned: {new Date(tree.lastScannedAt).toLocaleTimeString()}
-          </div>
+      {/* Location footer */}
+      <div style={{ marginTop: 16, paddingTop: 12,
+        borderTop: '1px solid #f0f0f0', fontSize: 10, color: '#9ca3af',
+        fontFamily: 'monospace' }}>
+        {tree.lat != null && tree.lng != null
+          ? `${tree.lat.toFixed(6)}, ${tree.lng.toFixed(6)}`
+          : tree.bboxNormalized
+            ? `bbox ${tree.bboxNormalized.join(', ')} (pixel-space)`
+            : 'location unknown'}
+        {tree.framesSeen != null && (
+          <span style={{ marginLeft: 8 }}>
+            · seen in {tree.framesSeen} {tree.framesSeen === 1 ? 'frame' : 'frames'}
+          </span>
+        )}
+        {tree.detectionConfidence != null && (
+          <span style={{ marginLeft: 8 }}>
+            · det conf {(tree.detectionConfidence * 100).toFixed(0)}%
+          </span>
         )}
       </div>
-    </div>
-  )
-}
-
-function Badge({ label, active }) {
-  return (
-    <span style={{
-      background: active ? '#EAF3DE' : '#f0f0f0',
-      color: active ? '#27500A' : '#999',
-      padding: '3px 10px', borderRadius: 4, fontSize: 11, fontWeight: 700,
-      border: `1px solid ${active ? '#639922' : '#ddd'}`
-    }}>
-      {label} {active ? '✓' : '–'}
-    </span>
-  )
-}
-
-function Stat({ label, value }) {
-  return (
-    <div style={{ background: '#fafafa', borderRadius: 6, padding: '8px 10px' }}>
-      <div style={{ fontSize: 11, color: '#888' }}>{label}</div>
-      <div style={{ fontSize: 14, fontWeight: 600 }}>{value}</div>
     </div>
   )
 }

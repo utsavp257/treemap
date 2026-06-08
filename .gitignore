@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .env
+backend/.env
 __pycache__/
 *.pyc
 *.pyo
@@ -9,3 +10,13 @@ venv/
 *.log
 .DS_Store
 backend/__pycache__/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS / temp
+Thumbs.db
+.cache/

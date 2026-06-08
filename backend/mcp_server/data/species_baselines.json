@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "description": "Curated species baselines used as healthy-reference anchors by the agent. Values are typical mid-range estimates for mature, healthy specimens in temperate climates. Source: synthesized from USDA Plant Database, TRY trait DB, and field-guide ranges. Used for comparison, not as authoritative species records.",
+    "schema": {
+      "scientific_name": "string",
+      "common_names": "list[string]",
+      "group": "conifer | broadleaf_deciduous | broadleaf_evergreen | palm",
+      "mature_crown_radius_m": "[min, max]",
+      "canopy_density_pct_healthy": "[min, max]",
+      "leaf_hue_range_hsv_deg": "[min, max] — HSV hue in degrees for healthy foliage",
+      "bark_texture": "string — short descriptor",
+      "common_diseases": "list[string]",
+      "preferred_soil_textures": "list[string]"
+    }
+  },
+  "species": {
+    "Quercus alba": {
+      "common_names": ["white oak"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [12, 18],
+      "canopy_density_pct_healthy": [65, 85],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "light grey, shallow vertical fissures, plated",
+      "common_diseases": ["oak wilt", "armillaria root rot", "anthracnose", "two-lined chestnut borer"],
+      "preferred_soil_textures": ["loam", "sandy_loam", "clay_loam"]
+    },
+    "Quercus robur": {
+      "common_names": ["English oak", "pedunculate oak"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [10, 17],
+      "canopy_density_pct_healthy": [60, 82],
+      "leaf_hue_range_hsv_deg": [70, 105],
+      "bark_texture": "rugged, deeply fissured, grey-brown",
+      "common_diseases": ["oak processionary moth", "powdery mildew", "acute oak decline"],
+      "preferred_soil_textures": ["loam", "clay_loam"]
+    },
+    "Quercus rubra": {
+      "common_names": ["northern red oak"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [10, 15],
+      "canopy_density_pct_healthy": [65, 85],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "dark grey-brown, vertical ridges with shiny inner stripes",
+      "common_diseases": ["oak wilt", "gypsy moth", "anthracnose"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Acer saccharum": {
+      "common_names": ["sugar maple"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [9, 14],
+      "canopy_density_pct_healthy": [70, 90],
+      "leaf_hue_range_hsv_deg": [75, 115],
+      "bark_texture": "grey-brown, smooth on young trees, plated on mature trunks",
+      "common_diseases": ["asian longhorned beetle", "verticillium wilt", "tar spot", "anthracnose"],
+      "preferred_soil_textures": ["loam", "sandy_loam", "clay_loam"]
+    },
+    "Acer rubrum": {
+      "common_names": ["red maple"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [8, 12],
+      "canopy_density_pct_healthy": [60, 80],
+      "leaf_hue_range_hsv_deg": [75, 115],
+      "bark_texture": "smooth and grey on young trees, dark and ridged with age",
+      "common_diseases": ["verticillium wilt", "tar spot", "asian longhorned beetle"],
+      "preferred_soil_textures": ["loam", "sandy_loam", "silt_loam", "peaty"]
+    },
+    "Acer platanoides": {
+      "common_names": ["Norway maple"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [8, 13],
+      "canopy_density_pct_healthy": [70, 90],
+      "leaf_hue_range_hsv_deg": [75, 115],
+      "bark_texture": "grey-black with shallow, interlocking ridges",
+      "common_diseases": ["verticillium wilt", "tar spot", "girdling roots"],
+      "preferred_soil_textures": ["loam", "clay_loam", "sandy_loam"]
+    },
+    "Fagus sylvatica": {
+      "common_names": ["European beech"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [10, 16],
+      "canopy_density_pct_healthy": [75, 92],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "smooth, thin, silver-grey",
+      "common_diseases": ["beech bark disease", "phytophthora root rot", "beech leaf disease"],
+      "preferred_soil_textures": ["loam", "chalky", "sandy_loam"]
+    },
+    "Betula pendula": {
+      "common_names": ["silver birch"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [5, 8],
+      "canopy_density_pct_healthy": [45, 65],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "papery white peeling bark with dark horizontal lenticels",
+      "common_diseases": ["birch rust", "bronze birch borer", "witches broom"],
+      "preferred_soil_textures": ["sandy_loam", "loam", "peaty"]
+    },
+    "Betula papyrifera": {
+      "common_names": ["paper birch"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [5, 9],
+      "canopy_density_pct_healthy": [45, 65],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "creamy-white peeling sheets with dark horizontal lenticels",
+      "common_diseases": ["bronze birch borer", "leaf miners", "leaf spot"],
+      "preferred_soil_textures": ["sandy_loam", "loam"]
+    },
+    "Fraxinus excelsior": {
+      "common_names": ["European ash"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [10, 14],
+      "canopy_density_pct_healthy": [50, 75],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "grey, smooth on young, deeply furrowed with age",
+      "common_diseases": ["ash dieback (Hymenoscyphus fraxineus)", "emerald ash borer", "ash anthracnose"],
+      "preferred_soil_textures": ["loam", "clay_loam", "chalky"]
+    },
+    "Fraxinus americana": {
+      "common_names": ["white ash"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [10, 14],
+      "canopy_density_pct_healthy": [55, 78],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "grey-brown, diamond-shaped ridges",
+      "common_diseases": ["emerald ash borer", "ash yellows", "anthracnose"],
+      "preferred_soil_textures": ["loam", "clay_loam"]
+    },
+    "Ulmus americana": {
+      "common_names": ["American elm"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [12, 18],
+      "canopy_density_pct_healthy": [60, 80],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "grey, deeply furrowed with intersecting ridges",
+      "common_diseases": ["Dutch elm disease", "elm yellows", "elm leaf beetle"],
+      "preferred_soil_textures": ["loam", "clay_loam", "silt_loam"]
+    },
+    "Tilia cordata": {
+      "common_names": ["small-leaved lime", "littleleaf linden"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [8, 12],
+      "canopy_density_pct_healthy": [70, 88],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "grey, smooth on young, shallowly ridged with age",
+      "common_diseases": ["aphids and sooty mold", "anthracnose", "japanese beetle"],
+      "preferred_soil_textures": ["loam", "clay_loam"]
+    },
+    "Platanus x acerifolia": {
+      "common_names": ["London plane"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [10, 18],
+      "canopy_density_pct_healthy": [60, 82],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "mottled olive, cream and brown peeling plates",
+      "common_diseases": ["anthracnose", "powdery mildew", "canker stain"],
+      "preferred_soil_textures": ["loam", "clay_loam", "sandy_loam"]
+    },
+    "Populus tremuloides": {
+      "common_names": ["quaking aspen"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [4, 7],
+      "canopy_density_pct_healthy": [45, 65],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "smooth white-green with dark scars",
+      "common_diseases": ["aspen leaf miner", "cytospora canker", "sudden aspen decline"],
+      "preferred_soil_textures": ["sandy_loam", "loam"]
+    },
+    "Populus nigra": {
+      "common_names": ["black poplar"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [8, 12],
+      "canopy_density_pct_healthy": [55, 75],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "dark grey-brown, deeply fissured",
+      "common_diseases": ["poplar canker", "leaf rust", "anthracnose"],
+      "preferred_soil_textures": ["loam", "silt_loam"]
+    },
+    "Salix alba": {
+      "common_names": ["white willow"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [8, 12],
+      "canopy_density_pct_healthy": [60, 80],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "grey, deeply furrowed",
+      "common_diseases": ["willow anthracnose", "watermark disease", "scab"],
+      "preferred_soil_textures": ["loam", "silt_loam", "clay_loam"]
+    },
+    "Liquidambar styraciflua": {
+      "common_names": ["sweetgum"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [8, 12],
+      "canopy_density_pct_healthy": [65, 85],
+      "leaf_hue_range_hsv_deg": [75, 115],
+      "bark_texture": "grey-brown, deeply furrowed with corky ridges",
+      "common_diseases": ["sweetgum webworm", "leader dieback", "iron chlorosis"],
+      "preferred_soil_textures": ["loam", "clay_loam"]
+    },
+    "Liriodendron tulipifera": {
+      "common_names": ["tulip tree", "yellow poplar"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [9, 14],
+      "canopy_density_pct_healthy": [60, 80],
+      "leaf_hue_range_hsv_deg": [70, 110],
+      "bark_texture": "grey-brown, deeply furrowed with interlacing ridges",
+      "common_diseases": ["tuliptree scale", "verticillium wilt", "powdery mildew"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Pinus sylvestris": {
+      "common_names": ["Scots pine"],
+      "group": "conifer",
+      "mature_crown_radius_m": [4, 7],
+      "canopy_density_pct_healthy": [55, 78],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "orange-red flaky scales on upper trunk, dark fissured lower",
+      "common_diseases": ["Ips bark beetle", "red band needle blight (Dothistroma)", "pine wilt nematode", "Heterobasidion root rot"],
+      "preferred_soil_textures": ["sandy", "sandy_loam"]
+    },
+    "Pinus strobus": {
+      "common_names": ["eastern white pine"],
+      "group": "conifer",
+      "mature_crown_radius_m": [6, 10],
+      "canopy_density_pct_healthy": [55, 78],
+      "leaf_hue_range_hsv_deg": [85, 125],
+      "bark_texture": "smooth grey-green on young, deeply furrowed grey-brown with age",
+      "common_diseases": ["white pine blister rust", "white pine weevil", "needle cast"],
+      "preferred_soil_textures": ["sandy_loam", "loam"]
+    },
+    "Pinus ponderosa": {
+      "common_names": ["ponderosa pine"],
+      "group": "conifer",
+      "mature_crown_radius_m": [6, 10],
+      "canopy_density_pct_healthy": [50, 75],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "thick, yellow-orange plated bark with deep furrows",
+      "common_diseases": ["mountain pine beetle", "western gall rust", "dwarf mistletoe"],
+      "preferred_soil_textures": ["sandy", "sandy_loam", "loam"]
+    },
+    "Picea abies": {
+      "common_names": ["Norway spruce"],
+      "group": "conifer",
+      "mature_crown_radius_m": [4, 7],
+      "canopy_density_pct_healthy": [70, 90],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "reddish-brown, thin, scaly plates",
+      "common_diseases": ["Ips typographus bark beetle", "spruce budworm", "needle cast"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Picea glauca": {
+      "common_names": ["white spruce"],
+      "group": "conifer",
+      "mature_crown_radius_m": [3, 6],
+      "canopy_density_pct_healthy": [70, 88],
+      "leaf_hue_range_hsv_deg": [85, 125],
+      "bark_texture": "thin, grey-brown, scaly",
+      "common_diseases": ["spruce budworm", "eastern spruce gall adelgid", "needle rusts"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Abies alba": {
+      "common_names": ["silver fir"],
+      "group": "conifer",
+      "mature_crown_radius_m": [4, 8],
+      "canopy_density_pct_healthy": [72, 90],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "smooth, silver-grey when young; cracked with age",
+      "common_diseases": ["silver fir woolly adelgid", "Armillaria root rot", "fir broom rust"],
+      "preferred_soil_textures": ["loam", "clay_loam"]
+    },
+    "Pseudotsuga menziesii": {
+      "common_names": ["Douglas fir"],
+      "group": "conifer",
+      "mature_crown_radius_m": [5, 9],
+      "canopy_density_pct_healthy": [70, 88],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "thick, deeply furrowed dark brown with corky ridges",
+      "common_diseases": ["Douglas-fir beetle", "Swiss needle cast", "laminated root rot"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Tsuga canadensis": {
+      "common_names": ["eastern hemlock"],
+      "group": "conifer",
+      "mature_crown_radius_m": [5, 9],
+      "canopy_density_pct_healthy": [70, 88],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "deeply ridged, brown, with red-purple inner bark",
+      "common_diseases": ["hemlock woolly adelgid", "elongate hemlock scale", "needle rust"],
+      "preferred_soil_textures": ["loam", "sandy_loam", "peaty"]
+    },
+    "Cedrus deodara": {
+      "common_names": ["deodar cedar"],
+      "group": "conifer",
+      "mature_crown_radius_m": [6, 10],
+      "canopy_density_pct_healthy": [65, 85],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "dark grey, plated with age",
+      "common_diseases": ["cedar bark beetles", "tip blight", "root rots"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Cupressus sempervirens": {
+      "common_names": ["Italian cypress"],
+      "group": "conifer",
+      "mature_crown_radius_m": [2, 4],
+      "canopy_density_pct_healthy": [75, 92],
+      "leaf_hue_range_hsv_deg": [80, 120],
+      "bark_texture": "grey-brown, thin, finely ridged",
+      "common_diseases": ["Seiridium canker", "cypress aphid", "cypress bark beetle"],
+      "preferred_soil_textures": ["sandy_loam", "loam"]
+    },
+    "Eucalyptus globulus": {
+      "common_names": ["blue gum"],
+      "group": "broadleaf_evergreen",
+      "mature_crown_radius_m": [8, 14],
+      "canopy_density_pct_healthy": [50, 72],
+      "leaf_hue_range_hsv_deg": [80, 130],
+      "bark_texture": "smooth grey-blue with peeling ribbons",
+      "common_diseases": ["eucalyptus longhorned borer", "eucalyptus snout beetle", "Mycosphaerella leaf disease"],
+      "preferred_soil_textures": ["loam", "sandy_loam"]
+    },
+    "Olea europaea": {
+      "common_names": ["olive"],
+      "group": "broadleaf_evergreen",
+      "mature_crown_radius_m": [3, 6],
+      "canopy_density_pct_healthy": [55, 78],
+      "leaf_hue_range_hsv_deg": [60, 100],
+      "bark_texture": "grey-green, smooth when young, gnarled with age",
+      "common_diseases": ["Xylella fastidiosa (olive quick decline)", "peacock spot", "verticillium wilt"],
+      "preferred_soil_textures": ["sandy_loam", "loam", "chalky"]
+    },
+    "tree": {
+      "common_names": ["unidentified tree"],
+      "group": "broadleaf_deciduous",
+      "mature_crown_radius_m": [4, 12],
+      "canopy_density_pct_healthy": [60, 82],
+      "leaf_hue_range_hsv_deg": [70, 115],
+      "bark_texture": "unknown",
+      "common_diseases": [],
+      "preferred_soil_textures": ["loam"]
+    }
+  }
+}
